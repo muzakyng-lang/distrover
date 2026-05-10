@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penjualan Distrover</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .chart-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-page" id="loginPage">
+        <div class="login-box">
+            <div class="logo-circle">
+                <i class="fa-solid fa-shirt"></i>
+            </div>
+            <h1>SISTEM PENJUALAN DISTROVER</h1>
+            <p>Silahkan login untuk melanjutkan</p>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <small>
+                Username : admin <br>
+                Password : admin
+            </small>
+        </div>
+    </div>
+
+    <div class="container" id="app" style="display:none;">
+        <aside class="sidebar">
+            <div>
+                <div class="logo">
+                    <h2>DISTROVER</h2>
+                </div>
+                <ul>
+                    <li onclick="showPage('dashboard')"><i class="fa-solid fa-house"></i> Dashboard</li>
+                    <li onclick="showPage('barang')"><i class="fa-solid fa-box"></i> Data Barang</li>
+                    <li onclick="showPage('transaksi')"><i class="fa-solid fa-cart-shopping"></i> Transaksi</li>
+                    <li onclick="showPage('laporan')"><i class="fa-solid fa-file"></i> Laporan</li>
+                </ul>
+            </div>
+            <button class="logout" onclick="logout()">Logout</button>
+        </aside>
+
+        <main class="main">
+            <section id="dashboard" class="page">
+                <div class="header">
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Total Barang</h3>
+                        <h1 id="totalBarang">0</h1>
+                    </div>
+                    <div class="card">
+                        <h3>Total Transaksi</h3>
+                        <h1 id="totalTransaksi">0</h1>
+                    </div>
+                    <div class="card">
+                        <h3>Total Penjualan</h3>
+                        <h1 id="totalPenjualan">Rp 0</h1>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 15px;">Grafik Penjualan Mingguan</h3>
+                    <canvas id="liveChart" height="100"></canvas>
+                </div>
+            </section>
+
+            <section id="barang" class="page" style="display:none;">
+                <div class="header barang-header">
+                    <h1>Data Barang</h1>
+                    <button onclick="tambahBarang()">+ Tambah Barang</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="barangTable"></tbody>
+                </table>
+            </section>
+
+            <section id="transaksi" class="page" style="display:none;">
+                <div class="header">
+                    <h1>Transaksi Kasir</h1>
+                </div>
+                <div class="transaksi-box">
+                    <select id="pilihBarang"></select>
+                    <input type="number" id="jumlahBarang" placeholder="Jumlah">
+                    <button onclick="tambahTransaksi()">Tambah</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Barang</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaksiTable"></tbody>
+                </table>
+
+                <div class="payment-box">
+                    <h2>Pembayaran</h2>
+                    <div class="payment-item">
+                        <label>Total Belanja</label>
+                        <input type="text" id="grandTotal" readonly>
+                    </div>
+                    <div class="payment-item">
+                        <label>Uang Pembeli</label>
+                        <input type="number" id="uangBayar" placeholder="Masukkan uang pembeli">
+                    </div>
+                    <div class="payment-item">
+                        <label>Kembalian</label>
+                        <input type="text" id="kembalian" readonly>
+                    </div>
+                    <button onclick="prosesPembayaran()">Proses Pembayaran</button>
+                    <button onclick="printStruk()">Cetak Struk</button>
+                    <button onclick="resetTransaksi()">Reset Transaksi</button>
+                </div>
+
+                <div class="struk" id="strukArea">
+                    <h2>DISTROVER</h2>
+                    <p>=====================</p>
+                    <div id="isiStruk"></div>
+                    <p>=====================</p>
+                    <h3 id="strukTotal"></h3>
+                    <h3 id="strukBayar"></h3>
+                    <h3 id="strukKembalian"></h3>
+                    <p>Terima Kasih</p>
+                </div>
+            </section>
+
+            <section id="laporan" class="page" style="display:none;">
+                <div class="header">
+                    <h1>Laporan Penjualan</h1>
+                </div>
+                <div class="laporan-box">
+                    <h2>Total Pendapatan</h2>
+                    <h1 id="laporanTotal">Rp 0</h1>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
